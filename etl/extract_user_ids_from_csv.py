@@ -7,6 +7,8 @@ zip_path = "../data/players/amended_first_200k_players.zip"
 extracted_csv_path = "../data/players/amended_first_200k_players.csv"
 output_path = "../data/intermediate/user_ids.txt"  
 
+NUM_OF_IDS = 15000
+
 # Ensure intermediate output folder exists
 os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
@@ -29,7 +31,7 @@ player_ids = df[id_col].dropna().astype(str)
 numeric_ids = player_ids[player_ids.str.isnumeric()]
 
 # Select top N IDs (adjust as needed)
-sample_ids = numeric_ids.head(1500)
+sample_ids = numeric_ids.head(NUM_OF_IDS)
 
 # Write to user_ids.txt
 with open(output_path, "w") as f:
