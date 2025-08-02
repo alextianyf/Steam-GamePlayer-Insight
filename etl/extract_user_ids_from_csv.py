@@ -1,20 +1,31 @@
 import pandas as pd
+import os
+import zipfile
 
-csv_path = "../data/players/amended_first_200k_players.csv"
-output_path = "../user_ids.txt"
+# Paths
+zip_path = "../data/players/amended_first_200k_players.zip"
+extracted_csv_path = "../data/players/amended_first_200k_players.csv"
+output_path = "../data/intermediate/user_ids.txt"
 
-# 读取 CSV，忽略 dtype 警告
-df = pd.read_csv(csv_path, low_memory=False)
+# Ensure intermediate output folder exists
+os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-# 使用 'Player Id' 列
+# Unzip if CSV does not exist yet
+if not os.path.exists(extracted_csv_path):
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        zip_ref.extractall(os.path.dirname(extracted_csv_path))
+    print(f"📂 Extracted CSV to {extracted_csv_path}")
+
+# Read CSV
+df = pd.read_csv(extracted_csv_path, low_memory=False)
+
+# Use 'Player Id' column
 id_col = "Player Id"
-
-# 提取前 300 位玩家 ID（根据你需要的数量修改）
 sample_ids = df[id_col].dropna().astype(str).head(1000)
 
-# 写入 user_ids.txt，每行一个 ID
+# Write to user_ids.txt
 with open(output_path, "w") as f:
     for sid in sample_ids:
         f.write(f"{sid}\n")
 
-print(f"✅ 成功写入 {len(sample_ids)} 个用户 ID 至 {output_path}")
+print(f"✅ Successfully wrote {len(sample_ids)} user IDs to {output_path}")

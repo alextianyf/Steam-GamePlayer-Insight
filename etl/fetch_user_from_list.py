@@ -9,11 +9,11 @@ USER_IDS_PATH = "../user_ids.txt"
 SAVE_DIR = "../data/raw/"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
-MAX_USERS = 30  # 目标抓取的有效玩家数
-TOP_N_GAMES = 10
+MAX_USERS = 30  # Target number of valid users to fetch
+TOP_N_GAMES = 10  # Limit to top N games per user
 
 def sanitize_filename(name):
-    """移除非法文件名字符"""
+    """Remove illegal characters from file names"""
     return re.sub(r'[^a-zA-Z0-9_\-]', '_', name)
 
 def fetch_owned_games(steamid):
@@ -29,7 +29,7 @@ def fetch_owned_games(steamid):
         games = response.json().get("response", {}).get("games", [])
         return sorted(games, key=lambda g: g.get("playtime_forever", 0), reverse=True)[:TOP_N_GAMES]
     except Exception as e:
-        print(f"⚠️ 获取游戏失败（{steamid}）：{e}")
+        print(f"Failed to fetch games for user {steamid}: {e}")
         return []
 
 def fetch_achievements(steamid, appid):
@@ -57,9 +57,9 @@ def save_games_csv(steamid, games):
             writer.writerow(["appid", "name", "playtime_hours"])
             for g in games:
                 writer.writerow([g["appid"], g["name"], g["playtime_forever"] / 60])
-        print(f"📝 已保存 {steamid} 的游戏数据")
+        print(f"Saved game data for user {steamid}")
     except Exception as e:
-        print(f"❌ 写入游戏数据失败：{e}")
+        print(f"Failed to write game data: {e}")
 
 def save_achievements_csv(steamid, appid, game_name, achievements):
     safe_name = sanitize_filename(game_name)
@@ -71,9 +71,9 @@ def save_achievements_csv(steamid, appid, game_name, achievements):
             writer.writerow(["apiname", "achieved", "unlock_time"])
             for ach in achievements:
                 writer.writerow([ach["apiname"], ach["achieved"], ach.get("unlocktime", "")])
-        print(f"✅ 成就保存：{appid} - {game_name}")
+        print(f"Saved achievements: {appid} - {game_name}")
     except Exception as e:
-        print(f"❌ 写入成就失败：{e}")
+        print(f"Failed to write achievements: {e}")
 
 def main():
     with open(USER_IDS_PATH) as f:
@@ -83,10 +83,10 @@ def main():
     for steamid in user_ids:
         if successful_users >= MAX_USERS:
             break
-        print(f"\n🔍 抓取用户 {steamid}")
+        print(f"\nFetching user {steamid}")
         games = fetch_owned_games(steamid)
         if not games:
-            print("❌ 没有可抓取的游戏，跳过")
+            print("No games found, skipping")
             continue
 
         save_games_csv(steamid, games)
@@ -98,16 +98,16 @@ def main():
                 save_achievements_csv(steamid, g["appid"], game_name, achievements)
                 has_valid_game = True
             else:
-                print(f"⚠️ 无成就或未公开：{g['appid']} - {g['name']}")
+                print(f"No achievements or not public: {g['appid']} - {g['name']}")
             time.sleep(1.2)
 
         if has_valid_game:
             successful_users += 1
-            print(f"🎉 成功抓取第 {successful_users} 个有效用户")
+            print(f"Successfully fetched data for {successful_users} valid users")
         else:
-            print("⚠️ 没有成就数据，用户跳过")
+            print("No achievement data, user skipped")
 
-    print(f"\n🎯 抓取完成，共成功获取 {successful_users} 个用户")
+    print(f"\nDone. Successfully fetched {successful_users} users")
 
 if __name__ == "__main__":
     main()
