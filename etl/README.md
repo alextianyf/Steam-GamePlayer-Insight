@@ -101,38 +101,52 @@ These outputs form the raw dataset foundation for downstream cleaning, feature e
 
 ## Data Load
 
-At this stage, structured `.csv` outputs are ready to be:
+At this stage, the structured `.csv` outputs are ready to be:
 
-- Loaded into databases or data lakes  
+- Loaded into SQL databases or data lakes  
 - Used for exploratory data analysis (EDA)  
-- Passed to machine learning pipelines for modeling  
-- Visualized via dashboards or reports  
-
-### SQL Integration (PostgreSQL Example)
-
-To support flexible queries and structured data modeling, we load the final datasets into a PostgreSQL database using Python (via `pandas` + `SQLAlchemy`).
-
-- Script: `load_to_postgres.py`
-- Target Tables:
-  - `players_7dtd`: Stores player gameplay records
-  - `achievement_schema_7dtd`: Stores achievement metadata with global unlock rates
-
-**Benefits of SQL Layer**:
-- Enables fast filtering (e.g., "players who unlocked 10+ combat achievements")
-- Supports joins (e.g., combine achievement descriptions with player stats)
-- Useful for downstream analytics dashboards or machine learning pipelines
+- Passed into machine learning pipelines  
+- Visualized through dashboards or reports  
 
 ---
 
-## Major Challenges During Extract Phase
+### Setting Up PostgreSQL Database
 
-| Challenge | Description | Resolution |
-|----------|-------------|------------|
-| 🎯 Identifying High-Quality Users | Most randomly queried Steam users had no achievements or very sparse data, making them unsuitable for analysis | Used Kaggle dataset (`amended_first_200k.csv`) to locate active players, then manually filtered by profile visibility |
-| 🔐 Private Profiles | Many user profiles from Kaggle were private or restricted, resulting in API failure | Filtered out dynamically during `GetOwnedGames` and `GetPlayerAchievements` calls |
-| 🚫 Limited API Scope | Steam’s public API only exposes a few player-level features (e.g. playtime, achievements) | Narrowed project focus to only analyze those available features |
-| 🔍 Validating User IDs | Kaggle dataset didn’t guarantee validity or accessibility of user IDs | Wrote scripts to validate each ID and skip unusable users |
-| 📂 Filename Issues | Achievement data was saved as `{appid}_{game_name}_achievements.csv`, but many game names contained special characters or inconsistent formatting | Parsing logic was updated to extract only appid and sanitize file naming |
-| ❗ Duplicate Data | When rerunning the data extraction and upload scripts, duplicate rows caused primary key violations in PostgreSQL | Added `ON CONFLICT DO NOTHING` to the insert logic to ensure idempotent uploads |
-| 🧱 Schema Mismatches | Column mismatches (e.g., `api_name` vs `apiname`) caused PostgreSQL errors during insertions | Resolved by strictly aligning SQL schema and Python insert columns |
+#### 1. Start the PostgreSQL Service  
 
+This step is required only the first time (or after reboot) to ensure the PostgreSQL server is running:
+
+```bash
+brew services start postgresql@17
+```
+
+#### 2. Create the steamdb Database
+
+Use the createdb command to initialize the database (only needed once):
+
+```bash
+createdb -U alextian steamdb
+```
+
+> Replace alextian with your PostgreSQL username if different.
+
+#### 3. pload CSV Data to PostgreSQL
+
+Run the script to load `.csv` files (such as `7dtd_players.csv`, `7dtd_achievement_schema.csv`) into PostgreSQL tables:
+
+```bash
+python upload_to_psql.py
+```
+
+> Make sure the script uses the correct credentials and table names (e.g., `players_7dtd`, `achievement_schema_7dtd`).
+
+#### 4. Connect to steamdb via Terminal
+
+To manually inspect or query the database using the PostgreSQL CLI:
+
+```bash
+psql -U alextian -d steamdb
+```
+
+> Once connected, you can run SQL commands directly from the terminal.  
+> Alternatively, you can use **pgAdmin 4**, a GUI-based PostgreSQL management tool, for more user-friendly database interaction.
