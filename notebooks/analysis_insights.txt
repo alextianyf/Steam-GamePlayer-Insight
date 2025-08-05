@@ -1,0 +1,21 @@
+Key Insights from Player Engagement Analysis:
+==================================================
+
+1. Player Distribution:
+- Casual (<5h): 202 players (26.7%)
+- Dedicated (20-50h): 114 players (15.1%)
+- Hardcore (50+h): 77 players (10.2%)
+- Regular (5-20h): 363 players (48.0%)
+
+2. Achievement Analysis:
+- Casual (<5h): Avg 6.5 achievements
+- Dedicated (20-50h): Avg 25.6 achievements
+- Hardcore (50+h): Avg 31.7 achievements
+- Regular (5-20h): Avg 7.9 achievements
+
+3. Playtime vs Achievements Correlation: 0.54
+
+4. Business Recommendations:
+- Focus retention efforts on Casual players (largest group)
+- Investigate why Dedicated players have lower achievement efficiency
+- Create targeted achievement paths for different engagement levels
