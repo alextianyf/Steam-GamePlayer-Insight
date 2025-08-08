@@ -151,7 +151,7 @@ from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # --------- Config ---------
-API_KEY = "E7477EA280C4AAEC0F9E54990F93D997"
+API_KEY = "83E7B436E900D4F8B0085F043D22BD23"
 USER_IDS_PATH = "../data/intermediate/user_ids.txt"
 VALID_USERS_PATH = "../data/intermediate/7dtd_valid_users.txt"
 SAVE_DIR = "../data/raw/"

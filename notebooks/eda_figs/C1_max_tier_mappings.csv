@@ -1,0 +1,9 @@
+column,levels,tier_index
+max_survive_minutes,"[np.int64(0), np.int64(60), np.int64(180), np.int64(600), np.int64(1680)]","[0, 1, 2, 3, 4]"
+max_items_crafted,"[np.int64(0), np.int64(50), np.int64(500), np.int64(1500), np.int64(5000)]","[0, 1, 2, 3, 4]"
+max_zombies_killed,"[np.int64(0), np.int64(10), np.int64(100), np.int64(500), np.int64(2500)]","[0, 1, 2, 3, 4]"
+max_players_killed,"[np.int64(0), np.int64(1), np.int64(5), np.int64(10), np.int64(25)]","[0, 1, 2, 3, 4]"
+max_fortitude_skill,"[np.int64(0), np.int64(4), np.int64(6), np.int64(8), np.int64(10)]","[0, 1, 2, 3, 4]"
+max_travel_distance,"[np.int64(0), np.int64(10), np.int64(50), np.int64(250), np.int64(1000)]","[0, 1, 2, 3, 4]"
+max_death_count,"[np.int64(0), np.int64(1), np.int64(7), np.int64(14), np.int64(28)]","[0, 1, 2, 3, 4]"
+max_character_level,"[np.int64(0), np.int64(7), np.int64(28), np.int64(70), np.int64(140), np.int64(300)]","[0, 1, 2, 3, 4, 5]"
