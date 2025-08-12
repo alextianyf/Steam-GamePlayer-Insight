@@ -12,47 +12,13 @@ This ETL ensures we turn raw player data into structured datasets ready for mach
 
 ---
 
-## Game Selection Rationale
-
-To support a diverse range of player behaviors and game mechanics, the full project will eventually include several games across different genres, chosen based on:
-
-- A large, active player base  
-- A rich, structured achievement system  
-- Distinct gameplay and progression mechanics  
-- Compatibility with Steam's public API format  
-
-However, this repository currently focuses on one title:
-
-### 7 Days to Die
-
-- **Genre**: Open-World Sandbox Survival (Crafting, Exploration, Combat)
-
-- **Why Start Here?**  
-  *7 Days to Die* features open-ended survival gameplay and a broad achievement system that reflects various player behaviors — from zombie combat to base-building. It provides strong analytical signals for clustering, prediction, and early-game survival studies.
-
-- **Personal Connection**  
-  I’ve followed this game’s development and community for years, and its strategic depth and variety make it a compelling case for player insight research.
-
-- **Analytical Features**  
-  The Steam achievement system tracks key behaviors like:
-  - Crafting volume (e.g., tools, structures)
-  - Combat milestones (e.g., zombie/player kills)
-  - Exploration and survival (e.g., distance traveled, longest life lived)
-
-  These data points enable us to:
-  - Segment players by in-game behavior  
-  - Predict future achievements  
-  - Study early factors that influence retention  
-
----
-
 ## ETL Workflow Summary
 
 ### Step 1: Extract Player IDs
 
 - Download the base dataset from Kaggle: [Steam Achievement Stats Ranking](https://www.kaggle.com/datasets/patrickgendotti/steam-achievementstatscom-rankings)
 
-- Extracts over 200,000 Steam user IDs ranked by achievement count.
+- This file provides over 200,000 Steam user IDs ranked by achievement count. These IDs are ready for data fetching, but we do not yet know which games these players are playing.
 
 - Cleaned CSV path: `data/players/amended_first_200k_players.csv`
 
@@ -60,31 +26,32 @@ However, this repository currently focuses on one title:
 
 - Run: `extract_user_ids_from_csv.py`
 
-- Filters for 15,000 users with public profiles
+- Filters for 20,000 users with public profiles
 
-- Removes entries with invalid characters (e.g., non-ASCII usernames)
+- Keep only numeric IDs since there are some invalid character usernames(e.g., non-ASCII usernames)
 
 - Output file: `data/intermediate/user_ids.txt`
 
-### Step 3: Game-Specific Data Extraction
+### Step 3: Game-Specific Data Extraction(demonstrate with game *7DTD*)
 
-- Run the script `fetch_7DTD_data.py` to collect gameplay data and achievement statistics for *7 Days to Die*.
-- The script fetches:
-  - Verified player ownership and playtime (must exceed 30 minutes)
-  - Achievement unlock status and timestamps (converted to Vancouver time)
-  - Global unlock rates for each achievement
+- Run the script `fetch_7DTD_data.py`
+
+- Filter the valid user IDs from `data/intermediate/user_ids.txt`, as many users have no playtime in the desired game. The filtered results will be saved to `data/intermediate/7dtd_valid_users.txt`.
+
+- Collect gameplay data and achievement statistics for valid players.
+  
+  - playtime (must exceed 30 minutes), saved to `data/raw/7dtd_players.csv`
+  
+  - Achievement unlock status and timestamps (converted to Vancouver time), saved to `data/raw/7dtd_players.csv`
+  
+  - Global unlock rates for each achievement, saved to `data/raw/7dtd_players.csv`
+  
+  - Achievement description, saved to `data/raw/7dtd_achievement_schema.csv`
+
 - Raw player data and achievement metadata will be saved to the `data/raw/` directory.
-- Steam Web API details can be found at [Steam Web API Documentation](https://steamcommunity.com/dev).
 
-As the project expands, similar fetch scripts will be added for other titles (e.g., `fetch_csgo_data.py`, `fetch_l4d2_data.py`) using the same modular ETL structure.
-
-#### Data Collection Tips
-
-- Exclude users with zero playtime in the target game  
-- Avoid only sampling "high playtime" users — that introduces bias  
-- Be mindful of special characters in game names or paths  
-- Define and maintain a consistent output schema  
-- Store achievement metadata (e.g., description, unlock rate) separately  
+> Steam Web API details can be found at [Steam Web API Documentation](https://steamcommunity.com/dev).  
+> As the project expands, similar fetch scripts can be added for other titles (e.g., `fetch_csgo_data.py`) using the same modular ETL structure. All you need to do is to modify the game ID.
 
 ---
 
