@@ -70,6 +70,8 @@ This ETL ensures we turn raw player data into structured datasets ready for mach
   - ***_count** — number of unlocked achievements in each category
 
   - **max_*** — highest achievement unlocked in each category
+  
+  - **efficiency_score** - $achievement_count / playtime_forever$
 
 ### Step 5: Data Loading and Start Analyzing
 

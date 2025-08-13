@@ -1,5 +1,13 @@
 ALTER TABLE player_summary
-  DROP COLUMN IF EXISTS efficiency_score;
+  DROP COLUMN IF EXISTS efficiency_score,
+  DROP COLUMN IF EXISTS max_survive_minutes,
+  DROP COLUMN IF EXISTS max_items_crafted,
+  DROP COLUMN IF EXISTS max_zombie_kills,
+  DROP COLUMN IF EXISTS max_player_kills,
+  DROP COLUMN IF EXISTS max_travel,
+  DROP COLUMN IF EXISTS max_level,
+  DROP COLUMN IF EXISTS max_fortitude,
+  DROP COLUMN IF EXISTS max_die_times;
 
 ALTER TABLE player_summary
   ADD COLUMN efficiency_score
@@ -9,12 +17,13 @@ BEGIN;
 
 ALTER TABLE player_summary
   ADD COLUMN IF NOT EXISTS max_survive_minutes int,
+  ADD COLUMN IF NOT EXISTS max_items_crafted int,
   ADD COLUMN IF NOT EXISTS max_zombie_kills int,
   ADD COLUMN IF NOT EXISTS max_player_kills int,
   ADD COLUMN IF NOT EXISTS max_travel int,
   ADD COLUMN IF NOT EXISTS max_level int,
   ADD COLUMN IF NOT EXISTS max_fortitude int,
-  ADD COLUMN IF NOT EXISTS max_die_days int;
+  ADD COLUMN IF NOT EXISTS max_die_times int;
 
 UPDATE player_summary ps
 SET
@@ -23,6 +32,13 @@ SET
     COALESCE(p."Life180Minute",0)*180,
     COALESCE(p."Life600Minute",0)*600,
     COALESCE(p."Life1680Minute",0)*1680,
+    0
+  ),
+  max_items_crafted = GREATEST(
+    COALESCE(p."Items50",0)*50,
+    COALESCE(p."Items500",0)*500,
+    COALESCE(p."Items1500",0)*1500,
+    COALESCE(p."Items5000",0)*5000,
     0
   ),
   max_zombie_kills = GREATEST(
@@ -61,7 +77,7 @@ SET
     COALESCE(p."Fortitude10",0)*10,
     0
   ),
-  max_die_days = GREATEST(
+  max_die_times = GREATEST(
     COALESCE(p."Die1",0)*1,
     COALESCE(p."Die7",0)*7,
     COALESCE(p."Die14",0)*14,
