@@ -24,13 +24,11 @@ SELECT
   ("StoneAxe" + "WoodFrame" + "Bedroll" + "LandClaim"
    + "Items50" + "Items500" + "Items1500" + "Items5000")                    			AS crafting_count,
 
-  ("Zombies10" + "Zombies100" + "Zombies500" + "Zombies2500")               			AS zombie_killer_count,
-
   ("Players1" + "Players5" + "Players10" + "Players25")                      			AS player_killer_count,
 
-  ("BleedOut" + "LegBreak" + "Kills44Mag")                                   			AS combat_count,
-
-  ("Fortitude4" + "Fortitude6" + "Fortitude8" + "Fortitude10")               			AS combat_skill_count,
+  ("BleedOut" + "LegBreak" + "Kills44Mag" + "Zombies10"
+  + "Zombies100" + "Zombies500" + "Zombies2500" 
+  + "Fortitude4" + "Fortitude6" + "Fortitude8" + "Fortitude10")                       AS combat_count,
 
   ("Travel10" + "Travel50" + "Travel250" + "Travel1000" + "Height255" + "Height0") 	AS exploration_count,
 
