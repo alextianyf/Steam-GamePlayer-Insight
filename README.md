@@ -1,63 +1,87 @@
-# Steam-GamePlayer-Insight
+# Steam Game Player Insight
 
-## 🎯 Project Objectives
+This repository is dedicated to analyzing **player behavior and achievement data from Steam games**.  
+The goal is to apply **data science, machine learning, and statistical analysis** to understand how players engage with different games, discover playstyle archetypes, and study the relationship between playtime, achievements, and retention.  
 
-This project focuses on three main objectives:
-
-1. **🧑‍💻 Player Insight**  
-   Understand what kinds of players exist (e.g. achievers, explorers, casuals) by analyzing game ownership, playtime, and achievement profiles.
-
-2. **🏆 Achievement Prediction**  
-   Given a user’s gameplay history, can we predict which achievements they’re likely to unlock next?
-
-3. **📈 Retention Modeling**  
-   Estimate which factors contribute to whether a player continues playing a game or churns early.
+The project is **purely personal-interest driven**: I started with *7 Days to Die (7DTD)* because I’ve recently enjoyed watching it streamed, even though I’ve never played it myself. More games will be added in the future as case studies.
 
 ---
 
-## Why Analyze Player Behavior?
+## Motivation
 
-Steam games offer a rich ecosystem for behavioral analytics. From playtime and session patterns to achievement progression, each signal helps us understand:
-
-- Which types of players unlock certain achievements  
-- How player behaviors cluster into gameplay archetypes  
-- What early in-game milestones predict long-term retention  
-- How game design choices influence engagement and difficulty
-
-This ETL system is designed to provide the clean, reliable datasets that downstream analysis depends on.
+This repository is a **personal research portfolio** combining gaming and data science.  
+Even without playing the games myself, I enjoy exploring how **player data tells a story** about motivation, retention, and design.  
+The ultimate goal is to develop **reusable frameworks** for analyzing game engagement across different genres.  
 
 ---
 
-## Game Selection Rationale
+## Repository Structure
 
-To support a diverse range of player behaviors and game mechanics, the full project will eventually include several games across different genres, chosen based on:
+This section provides a detailed overview of the project directory structure, helping you understand where key files and resources are located.
 
-- A large, active player base  
-- A rich, structured achievement system  
-- Distinct gameplay and progression mechanics  
-- Compatibility with Steam's public API format  
+```text
+.Steam-GamePlayer-Insight/
+├── data/                   # Data storage and processing
+│ ├── raw/                  # Original raw data (as collected)
+│ ├── intermediate/         # Cleaned / partially processed datasets
+│ ├── players/              # Player-level data extracts
+│ └── etl/                  # ETL scripts or transformed outputs
+│
+├── notebooks/              # Jupyter notebooks for analysis
+│ ├── 7DTD/                 # Analyses specific to 7 Days to Die
+│   ├── 01-EDA.ipynb
+│   ├── 02-efficiency-regression.ipynb
+│   ├── 03-Player-Segmentation.ipynb
+│   ├── 04-PvP-PvE-Classification.ipynb
+│   ├── 05-death-playtime-ABtest.ipynb (WIP)
+│   └── readme.md
+│
+├── sql/                    # SQL queries for database extraction or transformation
+│
+├── LICENSE
+├── .gitignore
+└── README.md # This file
+```
 
-However, this repository currently focuses on one title:
+---
 
-### 7 Days to Die
+## Current Focus: *7 Days to Die (7DTD)*
 
-- **Genre**: Open-World Sandbox Survival (Crafting, Exploration, Combat)
+Within `notebooks/7DTD/`, several studies have been completed:
 
-- **Why Start Here?**  
-  *7 Days to Die* features open-ended survival gameplay and a broad achievement system that reflects various player behaviors — from zombie combat to base-building. It provides strong analytical signals for clustering, prediction, and early-game survival studies.
+1. **Exploratory Data Analysis (EDA)**  
+   - Cleaned, validated, and explored the dataset.  
+   - Studied achievement distributions, playtime skew, and data quality issues.
 
-- **Personal Connection**  
-  I’ve followed this game’s development and community for years, and its strategic depth and variety make it a compelling case for player insight research.
+2. **Achievement Efficiency Regression**  
+   - Modeled efficiency score (achievements per playtime).  
+   - Polynomial regression (degree 3) achieved R² ≈ 0.96.  
+   - Random Forest Regression confirmed **log_playtime, crafting_count, combat_count** as key predictors.  
+   - Showed potential use for **anomaly/cheater detection**.
 
-- **Analytical Features**  
-  The Steam achievement system tracks key behaviors like:
-  - Crafting volume (e.g., tools, structures)
-  - Combat milestones (e.g., zombie/player kills)
-  - Exploration and survival (e.g., distance traveled, longest life lived)
+3. **Player Segmentation (Clustering)**  
+   - PCA (81% variance explained) + hierarchical clustering → **6 archetypes**:  
+     - Generalists, Crafters, Explorers, Fighters, Death-heavy quitters, Steady-progress.  
+   - Identified high-churn groups (death-heavy) and content-focused niches (crafters/explorers).  
+   - Provided insights for **retention strategies and design balance**.
 
-  These data points enable us to:
-  - Segment players by in-game behavior  
-  - Predict future achievements  
-  - Study early factors that influence retention  
+4. **PvE vs PvP Classification**  
+   - Defined groups via player kill data.  
+   - A/B testing showed **multi-player mode players have significantly higher playtime**.  
+   - Classification models: Logistic Regression (ROC-AUC 0.90), Random Forest (ROC-AUC 0.95).  
+   - Highlights the **importance of multiplayer for retention**.
+
+5. **Death vs Playtime A/B Testing (Work-in-progress)**  
+   - Investigating whether early deaths (in the first N unlocked achievements) impact long-term playtime.  
+   - Aim: detect **frustrated quitters** at an early stage.
+
+---
+
+## Future Directions
+
+- **More Games:** Extend the framework to additional Steam titles (MMOs, PvP shooters, sandbox survival).  
+- **Sequential Modeling:** Use RNNs (LSTM/GRU) to predict achievement unlock sequences, progression paths, and churn.  
+- **Cheater/Bot Detection:** Leverage efficiency scores and outlier behavior to flag abnormal players.  
+- **Cross-Game Archetypes:** Compare whether playstyle clusters generalize across different genres.  
 
 ---
